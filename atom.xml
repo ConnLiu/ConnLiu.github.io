@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-02-25T11:03:54.858Z</updated>
+  <updated>2017-02-25T15:51:10.734Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/02/25/leetcode-1-RomanToInt/"/>
     <id>http://yoursite.com/2017/02/25/leetcode-1-RomanToInt/</id>
     <published>2017-02-25T08:13:06.000Z</published>
-    <updated>2017-02-25T11:03:54.858Z</updated>
+    <updated>2017-02-25T15:51:10.734Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h2><p>Given a roman numeral, convert it to an integer.</p>
 <p>Input is guaranteed to be within the range from 1 to 3999.</p>
@@ -40,6 +40,12 @@
 <p>  <img src="http://liukun.tech/pic/leetcode-1-CaculTime.png" alt=""></p>
 <p>  这样看来用时并不多，那结论就是leetcode的OJ给跑测试用例的cpu不咋样，甚至不如我的电脑。。。虽然这个结论是我始料未及的，但是事实摆在这里</p>
 </li>
+</ul>
+<blockquote>
+<p>   (补)<strong>但是后来我发现，原来leetcode的用时计算的是所有用例的用时</strong>，不过通过与后来通过算法用时的对比，还是可以发现，仅一个用例也相差了0.332009-0.00669372ms，而leetcode使用了近4000个用例，也就是说正着算使用了大概1.2s，而反着只要27ms左右。原来超时就在这里。</p>
+</blockquote>
+<p><img src="http://liukun.tech/pic/embarrassed.gif" alt=""></p>
+<ul>
 <li><p>那就正面解决吧</p>
 <p>  既然不能用每个阿拉伯数字都试一试，那就直接对输入的罗马数字进行处理吧。</p>
 <p>  分析一下，发现千位只会出现 M ，百位只会出现 C、D、M ，类似地分析出十位、个位，那就依次找到罗马数字中的各个数位，再进行转换即可咯。（这时候发现，正面处理也是一点都不难。。。怪不得这是一道easy的题目， 0 0 ）</p>
