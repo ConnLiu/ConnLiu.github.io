@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Leroy</title>
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2017-02-25T10:37:52.216Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>Leroy</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>leetcode-1-RomanToInt</title>
+    <link href="http://yoursite.com/2017/02/25/leetcode-1-RomanToInt/"/>
+    <id>http://yoursite.com/2017/02/25/leetcode-1-RomanToInt/</id>
+    <published>2017-02-25T08:13:06.000Z</published>
+    <updated>2017-02-25T10:37:52.216Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h2><p>Given a roman numeral, convert it to an integer.</p>
+<p>Input is guaranteed to be within the range from 1 to 3999.</p>
+<p><a href="https://leetcode.com/problems/roman-to-integer/?tab=Description" target="_blank" rel="external">原题链接</a></p>
+<h2 id="My-Solution"><a href="#My-Solution" class="headerlink" title="My Solution"></a>My Solution</h2><ul>
+<li><p>第一感觉的歧途</p>
+<p>  第一眼看到这道题，就想到了2016-12的csp第二道工资计算题，觉得似乎正着算比较麻烦（即通过罗马数字直接得到阿拉伯数字，因为考虑到罗马数字中有很多不同字母），而如果反过来通过阿拉伯数字得到罗马数字就非常简单。</p>
+<p>  例如，对于阿拉伯数字 1999，只要分别得到千位、百位、十位、个位数字，再分别转换为罗马数字，最后拼接起来即可。</p>
+<p>  于是乎，抱着 “正难则反” 的策略，我兴致勃勃地写了一个for循环，从1-3999遍历得到罗马数字，其中只要得到一个与输入罗马数字相同的字符串就停下来，也就得到了它的阿拉伯数字。</p>
+<p>  但是！！！</p>
+<p>  <img src="../pic/leetcode-1-TimeOut.png" alt=""></p>
+<p>  一脸懵逼。我这么思路清晰、优美的代码居然超时了。</p>
+<p>  <img src="../pic/leetcode-1-TimeOut_code.png" alt=""></p>
+<p>  不过没关系，容我分析一波。既然它说我的代码超时了，又不告诉我时间用了多少就算超了，那我只好在自己电脑跑一下并输出用时。</p>
+<p>  <img src="../pic/leetcode-1-TimeOut_myC.png" alt=""></p>
+<p>  一看吓一跳，居然用时0ms，一开始我都是不信的，然后又跑了好几次，还换了计时的方法，最后发现结果都是0ms（只有一次是1ms）。后来还了解到clock()方式计时精确度一般在10ms左右，然后这里我测的时间都是0ms，显然不妥，于是，再找了一种更精确的计时方式，得到如下</p>
+<p>  <img src="../pic/leetcode-1-CaculTime.png" alt=""></p>
+<p>  这样看来用时并不多，那结论就是leetcode的OJ给跑测试用例的cpu不咋样，甚至不如我的电脑。。。虽然这个结论是我始料未及的，但是事实摆在这里</p>
+</li>
+<li><p>那就正面解决吧</p>
+<p>  既然不能用每个阿拉伯数字都试一试，那就直接对输入的罗马数字进行处理吧。</p>
+<p>  分析一下，发现千位只会出现 M ，百位只会出现 C、D、M ，类似地分析出十位、个位，那就依次找到罗马数字中的各个数位，再进行转换即可咯。（这时候发现，正面处理也是一点都不难。。。怪不得这是一道easy的题目， 0 0 ）</p>
+<p>  三下五除二，就写出了如下代码，然后就AC了，很开心。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line">   <span class="keyword">int</span> ret = <span class="number">0</span>;</div><div class="line">   <span class="keyword">char</span>* p[<span class="number">4</span>][<span class="number">10</span>] = &#123;</div><div class="line">       &#123; <span class="string">""</span>, <span class="string">"X"</span>, <span class="string">"XX"</span>, <span class="string">"XXX"</span>, <span class="string">"XL"</span>, <span class="string">"L"</span>, <span class="string">"LX"</span>, <span class="string">"LXX"</span>, <span class="string">"LXXX"</span>, <span class="string">"XC"</span> &#125;,</div><div class="line">       &#123; <span class="string">""</span>, <span class="string">"I"</span>, <span class="string">"II"</span>, <span class="string">"III"</span>, <span class="string">"IV"</span>, <span class="string">"V"</span>, <span class="string">"VI"</span>, <span class="string">"VII"</span>, <span class="string">"VIII"</span>, <span class="string">"IX"</span> &#125;,</div><div class="line">       &#123; <span class="string">""</span>, <span class="string">"C"</span>, <span class="string">"CC"</span>, <span class="string">"CCC"</span>, <span class="string">"CD"</span>, <span class="string">"D"</span>, <span class="string">"DC"</span>, <span class="string">"DCC"</span>, <span class="string">"DCCC"</span>, <span class="string">"CM"</span> &#125;,</div><div class="line">       &#123; <span class="string">""</span>, <span class="string">"M"</span>, <span class="string">"MM"</span>, <span class="string">"MMM"</span>&#125;</div><div class="line">   &#125;;</div><div class="line">   <span class="keyword">int</span> i = <span class="number">0</span>;</div><div class="line">   <span class="keyword">while</span>(s[i] == <span class="string">'M'</span>)&#123; <span class="comment">// thousand</span></div><div class="line">       i++;</div><div class="line">       ret += <span class="number">1000</span>;</div><div class="line">&#125;</div><div class="line"><span class="keyword">int</span> j = i;  <span class="comment">// hundred</span></div><div class="line"><span class="keyword">while</span>(s[j] == <span class="string">'C'</span> || s[j] == <span class="string">'D'</span> || s[j] == <span class="string">'M'</span>)&#123;</div><div class="line">	j++;</div><div class="line">&#125;</div><div class="line"><span class="built_in">string</span> tmp;</div><div class="line"><span class="keyword">if</span>( j != i)&#123;</div><div class="line">    tmp = s.substr(i,j-i);</div><div class="line">    i = j;</div><div class="line">   	j = <span class="number">1</span>;</div><div class="line">   	<span class="keyword">while</span>(tmp != p[<span class="number">2</span>][j])&#123;</div><div class="line">		j++;</div><div class="line">   	&#125;;</div><div class="line">	<span class="keyword">if</span>(j!=<span class="number">10</span>)</div><div class="line">  			ret = ret + j*<span class="number">100</span>;</div><div class="line">   	j = i;   </div><div class="line">&#125;</div><div class="line">	        <span class="comment">// ten-s</span></div><div class="line"><span class="keyword">while</span>(s[j] == <span class="string">'X'</span> || s[j] == <span class="string">'L'</span> || s[j] == <span class="string">'C'</span>)&#123;</div><div class="line">	j++;</div><div class="line">&#125;</div><div class="line"><span class="keyword">if</span>(j != i)&#123;</div><div class="line">    tmp = s.substr(i,j-i);</div><div class="line">   	i = j;</div><div class="line">   	j = <span class="number">1</span>;</div><div class="line">   	<span class="keyword">while</span>(tmp != p[<span class="number">1</span>][j])&#123;</div><div class="line">   		j++;</div><div class="line">   	&#125;;</div><div class="line">   	<span class="keyword">if</span>(j!=<span class="number">10</span>)</div><div class="line">   		ret = ret + j*<span class="number">10</span>;</div><div class="line">   	j = i;   </div><div class="line">&#125;	</div><div class="line">               <span class="comment">// last-digit</span></div><div class="line"><span class="keyword">while</span>(s[j] == <span class="string">'I'</span> || s[j] == <span class="string">'V'</span> || s[j] == <span class="string">'X'</span>)&#123;</div><div class="line">	j++;</div><div class="line">&#125;</div><div class="line"><span class="keyword">if</span>(j != i)&#123;</div><div class="line">    tmp = s.substr(i,j-i);</div><div class="line">   	i = j;</div><div class="line">   	j = <span class="number">1</span>;</div><div class="line">   	<span class="keyword">while</span>(tmp != p[<span class="number">0</span>][j])&#123;</div><div class="line">   		j++;</div><div class="line">   	&#125;;</div><div class="line">   	<span class="keyword">if</span>(j!=<span class="number">10</span>)</div><div class="line">   		ret = ret + j;    </div><div class="line">&#125;</div><div class="line">	</div><div class="line">   <span class="keyword">return</span> ret;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>然后我又把这个代码在自己电脑跑了一下，计算用时仅0.00669372ms（这个计时其实也有1ms左右的误差，但这么多不精确小数哪里来的我也不知道，觉得下次要专门研究一下计时函数），确实是比刚才第一种方法快了很多。</p>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><blockquote>
+<p> stay hungry, stay foolish</p>
+</blockquote>
+<p>伟大如乔布斯也明白向他人学习的重要性，何况于我呢！</p>
+<p>于是乎，我又孜孜不倦地去看了一看别人写的代码。</p>
+<h3 id="the-first"><a href="#the-first" class="headerlink" title="the first"></a>the first</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//count every Symbol and add its value to the sum, and </span></div><div class="line"><span class="comment">//minus the extra part of special cases.</span></div><div class="line">    <span class="keyword">int</span> sum=<span class="number">0</span>;</div><div class="line">    <span class="keyword">if</span>(s.indexOf(<span class="string">"IV"</span>)!=<span class="number">-1</span>)&#123;sum-=<span class="number">2</span>;&#125;</div><div class="line">    <span class="keyword">if</span>(s.indexOf(<span class="string">"IX"</span>)!=<span class="number">-1</span>)&#123;sum-=<span class="number">2</span>;&#125;</div><div class="line">    <span class="keyword">if</span>(s.indexOf(<span class="string">"XL"</span>)!=<span class="number">-1</span>)&#123;sum-=<span class="number">20</span>;&#125;</div><div class="line">    <span class="keyword">if</span>(s.indexOf(<span class="string">"XC"</span>)!=<span class="number">-1</span>)&#123;sum-=<span class="number">20</span>;&#125;</div><div class="line">    <span class="keyword">if</span>(s.indexOf(<span class="string">"CD"</span>)!=<span class="number">-1</span>)&#123;sum-=<span class="number">200</span>;&#125;</div><div class="line">    <span class="keyword">if</span>(s.indexOf(<span class="string">"CM"</span>)!=<span class="number">-1</span>)&#123;sum-=<span class="number">200</span>;&#125;</div><div class="line">    </div><div class="line">    <span class="keyword">char</span> c[]=s.toCharArray();</div><div class="line">    <span class="keyword">int</span> count=<span class="number">0</span>;</div><div class="line">    </div><div class="line">    <span class="keyword">for</span>(;count&lt;=s.length()<span class="number">-1</span>;count++)&#123;</div><div class="line">        <span class="keyword">if</span>(c[count]==<span class="string">'M'</span>) sum+=<span class="number">1000</span>;</div><div class="line">        <span class="keyword">if</span>(c[count]==<span class="string">'D'</span>) sum+=<span class="number">500</span>;</div><div class="line">        <span class="keyword">if</span>(c[count]==<span class="string">'C'</span>) sum+=<span class="number">100</span>;</div><div class="line">        <span class="keyword">if</span>(c[count]==<span class="string">'L'</span>) sum+=<span class="number">50</span>;</div><div class="line">        <span class="keyword">if</span>(c[count]==<span class="string">'X'</span>) sum+=<span class="number">10</span>;</div><div class="line">        <span class="keyword">if</span>(c[count]==<span class="string">'V'</span>) sum+=<span class="number">5</span>;</div><div class="line">        <span class="keyword">if</span>(c[count]==<span class="string">'I'</span>) sum+=<span class="number">1</span>;</div><div class="line">       </div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> sum;</div></pre></td></tr></table></figure>
+<p>嗯。。。</p>
+<p>这代码简单、明了、易懂，即使愚钝如我，也在看完之后立刻明白了它的原理，精确的抓住了罗马数字的特性！</p>
+<p>对于I、V、X、L、C、D、M这些构成罗马数字的符号，每个符号都是代表了一个数值，并且对于VI、LX等，完全可以分别把每个单独的符号所代表的数值加起来；唯一例外的是 IV、IX、XL、XC、CD、CM这几个，因为他们小数值的符号出现在前面，而大数值的符号出现在后面，这样就不是单独加起来能够正确表达了，所以对于这些特例，只需要在前面就处理一下即可。</p>
+<h3 id="The-second"><a href="#The-second" class="headerlink" title="The second"></a>The second</h3><p>而这第二个解法则是更加简单了，可是易读性却。。。。</p>
+<p>不过，我略加思索，便明白了。嘿嘿(●ˇ∀ˇ●)</p>
+<p>其实，就是把上一个解法加工了一下罢了，正是这句我刚说过的话启发了我：IV、IX、XL、XC、CD、CM这几个，因为他们小数值的符号出现在前面，而大数值的符号出现在后面，这样就不是单独加起来能够正确表达了。</p>
+<p>在这个解法中，<strong>依据前一个符号与后一个符号表示数值的大小关系</strong>，来得到他们联合在一起表示的正确的值是多少。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//Problem is simpler to solve by working the string from</span></div><div class="line"><span class="comment">//back to front and using a map. Runtime speed is 88 ms.</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">romanToInt</span><span class="params">(<span class="built_in">string</span> s)</span> </span></div><div class="line">&#123;</div><div class="line">    <span class="built_in">unordered_map</span>&lt;<span class="keyword">char</span>, <span class="keyword">int</span>&gt; T = &#123; &#123; <span class="string">'I'</span> , <span class="number">1</span> &#125;,</div><div class="line">                                   &#123; <span class="string">'V'</span> , <span class="number">5</span> &#125;,</div><div class="line">                                   &#123; <span class="string">'X'</span> , <span class="number">10</span> &#125;,</div><div class="line">                                   &#123; <span class="string">'L'</span> , <span class="number">50</span> &#125;,</div><div class="line">                                   &#123; <span class="string">'C'</span> , <span class="number">100</span> &#125;,</div><div class="line">                                   &#123; <span class="string">'D'</span> , <span class="number">500</span> &#125;,</div><div class="line">                                   &#123; <span class="string">'M'</span> , <span class="number">1000</span> &#125; &#125;;</div><div class="line">                                   </div><div class="line">   <span class="keyword">int</span> sum = T[s.back()];</div><div class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> i = s.length() - <span class="number">2</span>; i &gt;= <span class="number">0</span>; --i) </div><div class="line">   &#123;</div><div class="line">       <span class="keyword">if</span> (T[s[i]] &lt; T[s[i + <span class="number">1</span>]])</div><div class="line">       &#123;</div><div class="line">           sum -= T[s[i]];</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">else</span></div><div class="line">       &#123;</div><div class="line">           sum += T[s[i]];</div><div class="line">       &#125;</div><div class="line">   &#125;</div><div class="line">   </div><div class="line">   <span class="keyword">return</span> sum;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li>思维要开阔，要多想想数据的特点，才能得到解题的关键点；</li>
+<li>C++的定时函数需要研究一下；</li>
+<li>我现在使用的还只是笨方法，继续加油吧 (ง •_•)ง</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Problem&quot;&gt;&lt;a href=&quot;#Problem&quot; class=&quot;headerlink&quot; title=&quot;Problem&quot;&gt;&lt;/a&gt;Problem&lt;/h2&gt;&lt;p&gt;Given a roman numeral, convert it to an integer.&lt;/
+    
+    </summary>
+    
+    
+      <category term="leetcode" scheme="http://yoursite.com/tags/leetcode/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>AsyncTask使用简介</title>
+    <link href="http://yoursite.com/2017/02/20/AsyncTask/"/>
+    <id>http://yoursite.com/2017/02/20/AsyncTask/</id>
+    <published>2017-02-20T13:45:58.000Z</published>
+    <updated>2017-02-23T07:17:13.896Z</updated>
+    
+    <content type="html"><![CDATA[<p>AsyncTask是Android提供的一个助手类，它对Thread和Handler进行了封装，方便我们使用。Android之所以提供AsyncTask这个类，就是为了方便我们在后台线程中执行耗时操作，然后将结果发送给主线程，从而在主线程中进行UI更新等操作。<br><a id="more"></a></p>
+<h1 id="三个构造时的传入参数"><a href="#三个构造时的传入参数" class="headerlink" title="三个构造时的传入参数"></a>三个构造时的传入参数</h1><p>首先，AsyncTask构造时有三种泛型参数：Params, Progress 和 Result，如下</p>
+<p><code>new AsyncTask&lt;Params, Progress, Result&gt; () {
+}</code></p>
+<ul>
+<li>Params 表示用于AsyncTask执行任务的参数的类型</li>
+<li>Progress 表示在后台线程处理的过程中，可以阶段性地发布结果的数据类型</li>
+<li>Result 表示任务全部完成后所返回的数据类型</li>
+</ul>
+<h1 id="四个重要的回调方法"><a href="#四个重要的回调方法" class="headerlink" title="四个重要的回调方法"></a>四个重要的回调方法</h1><ul>
+<li><h2 id="onPreExecute"><a href="#onPreExecute" class="headerlink" title="onPreExecute"></a>onPreExecute</h2><p>  <code>@MainThread</code></p>
+<p>  <code>protect void onPreExecution () { }</code></p>
+<p>  该方法有MainThread注解，表示该方法是运行在主线程中的。在AsyncTask执行了execute()方法后就会在UI线程上执行onPreExecute()方法，该方法在task真正执行前运行，我们通常可以在该方法中显示一个进度条，从而告知用户后台任务即将开始。</p>
+</li>
+<li><h2 id="doInBackground"><a href="#doInBackground" class="headerlink" title="doInBackground"></a>doInBackground</h2><p>  <code>@WorkThread</code></p>
+<p>  <code>protect abstract Result doInBackground (Params... params) { }</code></p>
+<p>  该方法有WorkerThread注解，表示该方法是运行在单独的工作线程中的，而不是运行在主线程中。doInBackground会在onPreExecute()方法执行完成后立即执行，该方法用于在工作线程中执行耗时任务，我们可以在该方法中编写我们需要在后台线程中运行的逻辑代码，由于是运行在工作线程中，所以该方法不会阻塞UI线程。该方法接收Params泛型参数，参数params是Params类型的不定长数组，该方法的返回值是Result泛型，由于doInBackgroud是抽象方法，我们在使用AsyncTask时必须重写该方法。在doInBackground中执行的任务可能要分解为好多步骤，每完成一步我们就可以通过调用AsyncTask的publishProgress(Progress…)将阶段性的处理结果发布出去，阶段性处理结果是Progress泛型类型。当调用了publishProgress方法后，处理结果会被传递到UI线程中，并在UI线程中回调onProgressUpdate方法，下面会详细介绍。根据我们的具体需要，我们可以在doInBackground中不调用publishProgress方法，当然也可以在该方法中多次调用publishProgress方法。doInBackgroud方法的返回值表示后台线程完成任务之后的结果。</p>
+</li>
+<li><h2 id="onProgressUpdate"><a href="#onProgressUpdate" class="headerlink" title="onProgressUpdate"></a>onProgressUpdate</h2><p>  <code>@MainThread</code></p>
+<p>  <code>protect void onProgressUpdate (Progress... values) { }</code></p>
+<p>  该方法也具有MainThread注解，表示该方法是在主线程上被调用的，且传入的参数是Progress泛型定义的不定长数组。如果在doInBackground中多次调用了publishProgress方法，那么主线程就会多次回调onProgressUpdate方法。  </p>
+</li>
+<li><h2 id="onPostExecute"><a href="#onPostExecute" class="headerlink" title="onPostExecute"></a>onPostExecute</h2><p>  <code>@MainThread</code></p>
+<p>  <code>protect void onPostExecute (Result result) { }</code></p>
+<p>  该方法也具有MainThread注解，表示该方法是在主线程中被调用的。当doInBackgroud方法执行完毕后，就表示任务完成了，doInBackgroud方法的返回值就会作为参数在主线程中传入到onPostExecute方法中，这样就可以在主线程中根据任务的执行结果更新UI。</p>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;AsyncTask是Android提供的一个助手类，它对Thread和Handler进行了封装，方便我们使用。Android之所以提供AsyncTask这个类，就是为了方便我们在后台线程中执行耗时操作，然后将结果发送给主线程，从而在主线程中进行UI更新等操作。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+    
+    
+      <category term="Android" scheme="http://yoursite.com/tags/Android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>First page</title>
+    <link href="http://yoursite.com/2017/02/07/First-page/"/>
+    <id>http://yoursite.com/2017/02/07/First-page/</id>
+    <published>2017-02-07T09:56:35.000Z</published>
+    <updated>2017-02-23T06:29:46.341Z</updated>
+    
+    <content type="html"><![CDATA[<p>  十分开心，终于搭建好了第一个blog。<br><a id="more"></a></p>
+<h2 id="记录"><a href="#记录" class="headerlink" title="记录"></a>记录</h2><ul>
+<li><p>Markdown</p>
+<p>由于博客的文章都是采用markdown来写的，所以有必要了解这个语法。</p>
+<p>Markdown 的目标是实现「易读易写」。<a href="http://www.jianshu.com/p/f3fd881548ad" target="_blank" rel="external">这里</a>不仅介绍了atom的使用方法，还有Markdown的语法，我这第一篇文章便是用atom写的，虽然我最后还是准备投入Vscode的怀抱。</p>
+</li>
+<li><p>theme——<a href="https://www.haomwei.com/technology/maupassant-hexo.html" target="_blank" rel="external">Maupassant</a></p>
+<p>这是一个至简的主题，所以我喜欢，于是用了。</p>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;  十分开心，终于搭建好了第一个blog。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+    
+    
+      <category term="start" scheme="http://yoursite.com/tags/start/"/>
+    
+  </entry>
+  
+</feed>

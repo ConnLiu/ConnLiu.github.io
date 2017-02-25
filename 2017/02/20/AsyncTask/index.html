@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="Simple is a pleasure."><title>AsyncTask使用简介 | Leroy</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/5.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/grids-responsive-min.css"><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.1"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">AsyncTask使用简介</h1><a id="logo" href="/.">Leroy</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/history/"><i class="fa fa-history"> 历史</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">AsyncTask使用简介</h1><div class="post-content"><p>AsyncTask是Android提供的一个助手类，它对Thread和Handler进行了封装，方便我们使用。Android之所以提供AsyncTask这个类，就是为了方便我们在后台线程中执行耗时操作，然后将结果发送给主线程，从而在主线程中进行UI更新等操作。<br><a id="more"></a></p>
+<h1 id="三个构造时的传入参数"><a href="#三个构造时的传入参数" class="headerlink" title="三个构造时的传入参数"></a>三个构造时的传入参数</h1><p>首先，AsyncTask构造时有三种泛型参数：Params, Progress 和 Result，如下</p>
+<p><code>new AsyncTask&lt;Params, Progress, Result&gt; () {
+}</code></p>
+<ul>
+<li>Params 表示用于AsyncTask执行任务的参数的类型</li>
+<li>Progress 表示在后台线程处理的过程中，可以阶段性地发布结果的数据类型</li>
+<li>Result 表示任务全部完成后所返回的数据类型</li>
+</ul>
+<h1 id="四个重要的回调方法"><a href="#四个重要的回调方法" class="headerlink" title="四个重要的回调方法"></a>四个重要的回调方法</h1><ul>
+<li><h2 id="onPreExecute"><a href="#onPreExecute" class="headerlink" title="onPreExecute"></a>onPreExecute</h2><p>  <code>@MainThread</code></p>
+<p>  <code>protect void onPreExecution () { }</code></p>
+<p>  该方法有MainThread注解，表示该方法是运行在主线程中的。在AsyncTask执行了execute()方法后就会在UI线程上执行onPreExecute()方法，该方法在task真正执行前运行，我们通常可以在该方法中显示一个进度条，从而告知用户后台任务即将开始。</p>
+</li>
+<li><h2 id="doInBackground"><a href="#doInBackground" class="headerlink" title="doInBackground"></a>doInBackground</h2><p>  <code>@WorkThread</code></p>
+<p>  <code>protect abstract Result doInBackground (Params... params) { }</code></p>
+<p>  该方法有WorkerThread注解，表示该方法是运行在单独的工作线程中的，而不是运行在主线程中。doInBackground会在onPreExecute()方法执行完成后立即执行，该方法用于在工作线程中执行耗时任务，我们可以在该方法中编写我们需要在后台线程中运行的逻辑代码，由于是运行在工作线程中，所以该方法不会阻塞UI线程。该方法接收Params泛型参数，参数params是Params类型的不定长数组，该方法的返回值是Result泛型，由于doInBackgroud是抽象方法，我们在使用AsyncTask时必须重写该方法。在doInBackground中执行的任务可能要分解为好多步骤，每完成一步我们就可以通过调用AsyncTask的publishProgress(Progress…)将阶段性的处理结果发布出去，阶段性处理结果是Progress泛型类型。当调用了publishProgress方法后，处理结果会被传递到UI线程中，并在UI线程中回调onProgressUpdate方法，下面会详细介绍。根据我们的具体需要，我们可以在doInBackground中不调用publishProgress方法，当然也可以在该方法中多次调用publishProgress方法。doInBackgroud方法的返回值表示后台线程完成任务之后的结果。</p>
+</li>
+<li><h2 id="onProgressUpdate"><a href="#onProgressUpdate" class="headerlink" title="onProgressUpdate"></a>onProgressUpdate</h2><p>  <code>@MainThread</code></p>
+<p>  <code>protect void onProgressUpdate (Progress... values) { }</code></p>
+<p>  该方法也具有MainThread注解，表示该方法是在主线程上被调用的，且传入的参数是Progress泛型定义的不定长数组。如果在doInBackground中多次调用了publishProgress方法，那么主线程就会多次回调onProgressUpdate方法。  </p>
+</li>
+<li><h2 id="onPostExecute"><a href="#onPostExecute" class="headerlink" title="onPostExecute"></a>onPostExecute</h2><p>  <code>@MainThread</code></p>
+<p>  <code>protect void onPostExecute (Result result) { }</code></p>
+<p>  该方法也具有MainThread注解，表示该方法是在主线程中被调用的。当doInBackgroud方法执行完毕后，就表示任务完成了，doInBackgroud方法的返回值就会作为参数在主线程中传入到onPostExecute方法中，这样就可以在主线程中根据任务的执行结果更新UI。</p>
+</li>
+</ul>
+</div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">© <a href="/." rel="nofollow">Leroy.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.1" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.1" async></script><link rel="stylesheet" type="text/css" href="/css/jquery.fancybox.css?v=0.0.1"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.1"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.1"></script></div></body></html>
