@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-02-25T10:37:52.216Z</updated>
+  <updated>2017-02-25T11:03:54.858Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/02/25/leetcode-1-RomanToInt/"/>
     <id>http://yoursite.com/2017/02/25/leetcode-1-RomanToInt/</id>
     <published>2017-02-25T08:13:06.000Z</published>
-    <updated>2017-02-25T10:37:52.216Z</updated>
+    <updated>2017-02-25T11:03:54.858Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h2><p>Given a roman numeral, convert it to an integer.</p>
 <p>Input is guaranteed to be within the range from 1 to 3999.</p>
@@ -31,13 +31,13 @@
 <p>  例如，对于阿拉伯数字 1999，只要分别得到千位、百位、十位、个位数字，再分别转换为罗马数字，最后拼接起来即可。</p>
 <p>  于是乎，抱着 “正难则反” 的策略，我兴致勃勃地写了一个for循环，从1-3999遍历得到罗马数字，其中只要得到一个与输入罗马数字相同的字符串就停下来，也就得到了它的阿拉伯数字。</p>
 <p>  但是！！！</p>
-<p>  <img src="../pic/leetcode-1-TimeOut.png" alt=""></p>
+<p>  <img src="http://liukun.tech/pic/leetcode-1-TimeOut.png" alt=""></p>
 <p>  一脸懵逼。我这么思路清晰、优美的代码居然超时了。</p>
-<p>  <img src="../pic/leetcode-1-TimeOut_code.png" alt=""></p>
+<p>  <img src="http://liukun.tech/pic/leetcode-1-TimeOut_code.png" alt=""></p>
 <p>  不过没关系，容我分析一波。既然它说我的代码超时了，又不告诉我时间用了多少就算超了，那我只好在自己电脑跑一下并输出用时。</p>
-<p>  <img src="../pic/leetcode-1-TimeOut_myC.png" alt=""></p>
+<p>  <img src="http://liukun.tech/pic/leetcode-1-TimeOut_myC.png" alt=""></p>
 <p>  一看吓一跳，居然用时0ms，一开始我都是不信的，然后又跑了好几次，还换了计时的方法，最后发现结果都是0ms（只有一次是1ms）。后来还了解到clock()方式计时精确度一般在10ms左右，然后这里我测的时间都是0ms，显然不妥，于是，再找了一种更精确的计时方式，得到如下</p>
-<p>  <img src="../pic/leetcode-1-CaculTime.png" alt=""></p>
+<p>  <img src="http://liukun.tech/pic/leetcode-1-CaculTime.png" alt=""></p>
 <p>  这样看来用时并不多，那结论就是leetcode的OJ给跑测试用例的cpu不咋样，甚至不如我的电脑。。。虽然这个结论是我始料未及的，但是事实摆在这里</p>
 </li>
 <li><p>那就正面解决吧</p>
