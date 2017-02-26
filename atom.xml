@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-02-25T15:55:13.000Z</updated>
+  <updated>2017-02-26T15:23:58.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,67 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Android 架构初探</title>
+    <link href="http://yoursite.com/2017/02/26/Android-%E6%9E%B6%E6%9E%84%E5%88%9D%E6%8E%A2/"/>
+    <id>http://yoursite.com/2017/02/26/Android-架构初探/</id>
+    <published>2017-02-26T14:23:42.000Z</published>
+    <updated>2017-02-26T15:23:58.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>将项目分为了三个层级：模型层、核心层、界面层。模型层定义了所有的模型，即数据类型如UserBO；核心层处理所有业务逻辑，如判断邮箱格式、密码的md5转换；界面层就处理界面的展示。各个层级之间的依赖关系如下图</p>
+<p><img src="http://liukun.tech/pic/android-jiagou-01.png" alt=""></p>
+<h2 id="模型层"><a href="#模型层" class="headerlink" title="模型层"></a>模型层</h2><p>由上图，我们知道了模型层是被其他两层所依赖的，也就是说模型层定义的数据类型可以被其他两层引用。（这也很容易理解，因为数据实体类必然是最基础的，需要被引用而不是引用别人）</p>
+<p>模型层虽然横跨所有层级，但确实最为简单易懂的。只不过是封装了所有数据实体类，基本上也是跟后端数据库的数据一致的。</p>
+<h2 id="核心层"><a href="#核心层" class="headerlink" title="核心层"></a>核心层</h2><p>核心层依赖于模型层，也就是说核心层可以引用模型层的定义各种数据实体类。</p>
+<p>本层中定义了两个接口，三个类（如还有需要可再定义），下面我们一一解释。</p>
+<ul>
+<li><p>接口 ActionCallbackListener<t></t></p>
+<p>  我们看名字就知道它是一个回调监听器，并且后面带有一个泛型T，也可以让我们依据实际情况返回不同的数据。</p>
+</li>
+<li><p>接口 AppAction</p>
+<p>  其中定义的是界面层需要使用的action，例如login、register。</p>
+</li>
+<li><p>类 AppActionImpl implements AppAction</p>
+<p>  我们看到它继承了AppAction，也就是说 <strong>它将会实现AppAction中定义的虚函数</strong>。</p>
+</li>
+<li><p>类 ErrorEvent </p>
+<p>  顾名思义，也就是完成错误码的一些相关定义。</p>
+</li>
+<li><p>类 EncryptUtil</p>
+<p>  加密工具类，如完成md5转换。</p>
+</li>
+</ul>
+<h2 id="界面层"><a href="#界面层" class="headerlink" title="界面层"></a>界面层</h2><p>界面层依赖于核心层和模型层。之所以依赖核心层，就是因为它把业务逻辑的相关操作都放到核心层了。</p>
+<p>我们都知道界面层最复杂,也最容易变得混乱不堪，因而我们采用如下方法改善这一问题：</p>
+<ul>
+<li><p>根据不同类型划分包，分别为activity（各个活动类）、adapter、utils（工具类）、view（自定义界面）、fragment等。</p>
+</li>
+<li><p>对于activity、adapter、fragment，各自都有一个基类，做统一的处理，比如定义了一些共用的常量、对象和方法等。</p>
+</li>
+</ul>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>为了改变之前写项目的混乱，逛了逛github和知乎，就看到了Keegan小钢的<a href="http://keeganlee.me/post/android/20150605" target="_blank" rel="external">这篇博客</a>，感触最为深刻，因而也想下手敲敲代码，试一试。</p>
+<p>感谢Keegan小钢</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;将项目分为了三个层级：模型层、核心层、界面层。模型层定义了所有的模型，即数据类型如UserBO；核心层处理所有业务逻辑，如判断邮箱格式、密码的md5转换；界面层就处理界面的展示。各个层级之间的依赖关系如下图&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://liukun.te
+    
+    </summary>
+    
+      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+    
+    
+      <category term="Android 架构" scheme="http://yoursite.com/tags/Android-%E6%9E%B6%E6%9E%84/"/>
+    
+  </entry>
+  
+  <entry>
     <title>leetcode-1-RomanToInt</title>
     <link href="http://yoursite.com/2017/02/25/leetcode-1-RomanToInt/"/>
     <id>http://yoursite.com/2017/02/25/leetcode-1-RomanToInt/</id>
     <published>2017-02-25T08:13:06.000Z</published>
-    <updated>2017-02-25T15:55:13.000Z</updated>
+    <updated>2017-02-25T15:55:56.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h2><p>Given a roman numeral, convert it to an integer.</p>
 <p>Input is guaranteed to be within the range from 1 to 3999.</p>
