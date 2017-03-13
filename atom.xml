@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-03-13T08:08:49.000Z</updated>
+  <updated>2017-03-13T09:58:36.850Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,78 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>201412-4 csp 最小生成树</title>
+    <link href="http://yoursite.com/2017/03/13/201412-4-csp-%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/"/>
+    <id>http://yoursite.com/2017/03/13/201412-4-csp-最小生成树/</id>
+    <published>2017-03-13T09:56:48.000Z</published>
+    <updated>2017-03-13T09:58:36.850Z</updated>
+    
+    <content type="html"><![CDATA[<p>毫无坑点，直接用Kruskal 算法即可。算法思想也比较简单，直接参见代码即可<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 最小生成树  Kruskal 算法</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span> </span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> maxV 100000</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> maxE 100000</span></div><div class="line"><span class="keyword">struct</span> Edge&#123;</div><div class="line">	<span class="keyword">int</span> fm, to ,dist;</div><div class="line">&#125;e[maxE];</div><div class="line"><span class="keyword">int</span> fa[maxV], n, m;</div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">cmp</span><span class="params">(Edge a,Edge b)</span></span>&#123;</div><div class="line">	<span class="keyword">return</span> a.dist &lt; b.dist;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getfa</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;  <span class="comment">//在并查集森林中找到x的祖先 </span></div><div class="line">	<span class="keyword">if</span>(fa[x] == x) <span class="keyword">return</span> fa[x];</div><div class="line">	<span class="keyword">else</span> <span class="keyword">return</span> fa[x] = getfa(fa[x]); </div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">same</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span>&#123;</div><div class="line">	<span class="keyword">return</span> getfa(x) == getfa(y);</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">void</span>  <span class="title">merge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</div><div class="line">	<span class="keyword">int</span> fax = getfa(x), fay = getfa(y);</div><div class="line">	fa[fax] = fay;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">	<span class="built_in">cin</span>&gt;&gt;n&gt;&gt;m;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;=m; i++)</div><div class="line">		<span class="built_in">cin</span>&gt;&gt;e[i].fm&gt;&gt;e[i].to&gt;&gt;e[i].dist;</div><div class="line">	sort(e+<span class="number">1</span>,e+m+<span class="number">1</span>,cmp); <span class="comment">// 对边按权值进行升序排序</span></div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;=n; i++)</div><div class="line">		fa[i] = i;</div><div class="line">	<span class="keyword">int</span> rst = n, ans = <span class="number">0</span>; <span class="comment">//rst 表示目前的点共存于多少个集合中</span></div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;=m &amp;&amp; rst&gt;<span class="number">1</span>; i++)&#123;</div><div class="line">		<span class="keyword">int</span> x = e[i].fm, y = e[i].to;</div><div class="line">		<span class="keyword">if</span>(same(x,y)) <span class="keyword">continue</span>;  <span class="comment">//如果两个点存在同一集合中</span></div><div class="line">		<span class="keyword">else</span>&#123;</div><div class="line">			merge(x,y); <span class="comment">//将两个点合并到同一集 </span></div><div class="line">			rst--; <span class="comment">//合并集合后，集合数目减一 </span></div><div class="line">			ans += e[i].dist;</div><div class="line">		&#125;	</div><div class="line">	&#125; </div><div class="line">	<span class="built_in">cout</span>&lt;&lt;ans&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;毫无坑点，直接用Kruskal 算法即可。算法思想也比较简单，直接参见代码即可&lt;br&gt;&lt;figure class=&quot;highlight c++&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div
+    
+    </summary>
+    
+      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+    
+    
+      <category term="csp" scheme="http://yoursite.com/tags/csp/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>201312-4 csp 有趣的数</title>
+    <link href="http://yoursite.com/2017/03/13/201312-4-csp-%E6%9C%89%E8%B6%A3%E7%9A%84%E6%95%B0/"/>
+    <id>http://yoursite.com/2017/03/13/201312-4-csp-有趣的数/</id>
+    <published>2017-03-13T08:35:50.000Z</published>
+    <updated>2017-03-13T08:49:21.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>这题是一个排列组合问题，只要建模完成就很容易写出来。<br><a id="more"></a></p>
+<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>　　我们把一个数称为有趣的，当且仅当：</p>
+<ol>
+<li>它的数字只包含0, 1, 2, 3，且这四个数字都出现过至少一次。</li>
+<li>所有的0都出现在所有的1之前，而所有的2都出现在所有的3之前。</li>
+<li>最高位数字不为0。
+　　</li>
+</ol>
+<p>因此，符合我们定义的最小的有趣的数是2013。除此以外，4位的有趣的数还有两个：2031和2301。
+　　</p>
+<p>请计算恰好有n位的有趣的数的个数。由于答案可能非常大，只需要输出答案除以1000000007的余数。</p>
+<p>输入格式
+　　</p>
+<p>输入只有一行，包括恰好一个正整数n (4 ≤ n ≤ 1000)。</p>
+<p>输出格式
+　　</p>
+<p>输出只有一行，包括恰好n 位的整数中有趣的数的个数除以1000000007的余数。</p>
+<p>样例输入</p>
+<p>4</p>
+<p>样例输出</p>
+<p>3</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>首先我们假设数字0的个数为a，1的个数为b，同时依据题目限制条件则有：a+b &lt;= n-2(因为2、3必须出现至少一次)。那么对于a个0和b个1组成的有趣的数有多少个呢？</p>
+<ol>
+<li>首先从n-1个（因为总共n位数，且第一位必为2，可以思考一下为什么）位置中取出a+b个位置用来放置0、1，有C[n-1][a+b]中情况；</li>
+<li>这时，0、1的位置也就已经确定了，思考一下为什么。那就开始考虑一下2、3的位置，首先知道2、3的总数目为 n-a-b-1 ，而2又必须在3之前，那么我们只要找到第一个出现3的位置即可，很简单必然是 n-a-b-2种情况。</li>
+</ol>
+<p>这样我们就可以得到对于a个0和b个1组成的有趣的数有 C[n-1][a+b]*(n-a-b-1) 个。最后我们只要遍取一下所有可能的a和b即可。</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> maxn 1001 </span></div><div class="line"><span class="keyword">const</span> <span class="keyword">long</span> <span class="keyword">long</span> mod = <span class="number">1000000007</span>;</div><div class="line"><span class="keyword">int</span> c[maxn][maxn] = &#123;<span class="number">0</span>&#125;;</div><div class="line"><span class="function"><span class="keyword">void</span>  <span class="title">init</span><span class="params">(<span class="keyword">int</span> p)</span></span>&#123;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;=p; i++)&#123;</div><div class="line">		c[i][<span class="number">0</span>] = c[i][i] = <span class="number">1</span>;</div><div class="line">		c[i][<span class="number">1</span>] = c[i][i<span class="number">-1</span>] = i;</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">2</span>; <span class="number">2</span>*j&lt;=i; j++)&#123;</div><div class="line">			c[i][j] = (c[i<span class="number">-1</span>][j<span class="number">-1</span>] + c[i<span class="number">-1</span>][j])%mod;</div><div class="line">			c[i][i-j] = c[i][j];</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">	<span class="keyword">int</span> n;</div><div class="line">	<span class="built_in">cin</span>&gt;&gt;n;</div><div class="line">	init(n<span class="number">-1</span>);</div><div class="line">	<span class="keyword">long</span> <span class="keyword">long</span> res = <span class="number">0</span>;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> a=<span class="number">1</span>; a&lt;=n<span class="number">-3</span>; a++)&#123;</div><div class="line">		<span class="keyword">for</span>( <span class="keyword">int</span> b=<span class="number">1</span>; b+a&lt;=n<span class="number">-2</span>; b++)&#123;</div><div class="line">			<span class="keyword">long</span> <span class="keyword">long</span> tmp1 = c[n<span class="number">-1</span>][a+b], tmp2;</div><div class="line">			tmp2 = n-a-b<span class="number">-1</span>;</div><div class="line">			tmp1 = ( tmp1*tmp2 )% mod;</div><div class="line">			res += tmp1;</div><div class="line">			res %= mod;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	<span class="built_in">cout</span>&lt;&lt;res&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;这题是一个排列组合问题，只要建模完成就很容易写出来。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+    
+    
+      <category term="csp" scheme="http://yoursite.com/tags/csp/"/>
+    
+  </entry>
   
   <entry>
     <title>Tarjan csp-201509-4</title>
