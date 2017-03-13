@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-03-13T10:07:27.512Z</updated>
+  <updated>2017-03-13T10:08:50.726Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/03/13/201612-4-csp-dp/"/>
     <id>http://yoursite.com/2017/03/13/201612-4-csp-dp/</id>
     <published>2017-03-13T10:02:23.000Z</published>
-    <updated>2017-03-13T10:07:27.512Z</updated>
+    <updated>2017-03-13T10:08:50.726Z</updated>
     
     <content type="html"><![CDATA[<p>这道题目，当初考试时候也做过，一脸懵逼的瞎碰了10分。后来才知道可以用动态规划来写，找到了状态转移方程就十分简单。<br><a id="more"></a></p>
 <h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>由于题目中要求最终要按照字典序，因而只能每次合并相邻的两个频率，这就与矩阵链相乘十分相似。</p>
@@ -32,6 +32,10 @@
     
     </summary>
     
+      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+    
+    
+      <category term="csp" scheme="http://yoursite.com/tags/csp/"/>
     
   </entry>
   
