@@ -1,0 +1,82 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="Simple is a pleasure."><title>201412-3 csp 集合竞价 | Leroy</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/5.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/grids-responsive-min.css"><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.1"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">201412-3 csp 集合竞价</h1><a id="logo" href="/.">Leroy</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/history/"><i class="fa fa-history"> 历史</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">201412-3 csp 集合竞价</h1><div class="post-meta">Mar 13, 2017<span> | </span><span class="category"><a href="/categories/大学/">大学</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><p>对于没有接触过股市的我来说，这道题目题面就有一点点复杂，后来虽然了然于心了，但是还差一点，终于80分。<br><a id="more"></a></p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><pre><code>虽然我已经注意到了，要用long long类型存储，可是依然80分。
+
+思路待补充。
+</code></pre><h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>```C++<br>//3.5  80分 </p>
+<p>#include <iostream><br>using namespace std;</iostream></p>
+<p>#include <string></string></p>
+<p>#include <vector></vector></p>
+<p>#include <map></map></p>
+<p>#define SELL 0</p>
+<p>#define BUY 1</p>
+<p>#define CANCEL 2</p>
+<p>#define CAN_S 3</p>
+<p>#define CAN_B 4<br>typedef struct{<br>    int type;<br>    float f;<br>    long long t;<br>}Node;<br>typedef struct{ // 总卖出量 和买进量<br>    long long sell;<br>    long long buy;<br>}Res;<br>map<int,node> cmd;<br>vector<int> del;<br>map<float,res> out;</float,res></int></int,node></p>
+<p>int main(){<br>//    freopen(“data.txt”,”r”,stdin);<br>    string str;<br>    int i=1;<br>    while(cin&gt;&gt;str){<br>        float f;<br>        long long t;<br>        Node tmp;<br>        if(str == “sell”){<br>            cin&gt;&gt;f&gt;&gt;t;<br>            tmp.type = SELL;<br>            tmp.f = f;<br>            tmp.t = t;<br>        }else if(str == “buy”){<br>            cin&gt;&gt;f&gt;&gt;t;<br>            tmp.type = BUY;<br>            tmp.f = f;<br>            tmp.t = t;<br>        }else if( str == “cancel” ){<br>            cin&gt;&gt;t;<br>            tmp.type = CANCEL;<br>            tmp.t = t;<br>            del.push_back(t);<br>        }<br>        cmd[i] = tmp;<br>        i++;<br>    };<br>    // 执行cancel操作<br>    vector<int>::iterator it_del = del.begin();<br>    while(it_del != del.end()){<br>        if( cmd[<em>it_del].type == CAN_S ){<br>            cmd[</em>it_del].type = SELL;<br>        }else if( cmd[<em>it_del].type == CAN_B ){<br>            cmd[</em>it_del].type = BUY;<br>        }else if( cmd[<em>it_del].type == BUY ){<br>            cmd[</em>it_del].type = CAN_B;<br>        }else if( cmd[<em>it_del].type == SELL ){<br>            cmd[</em>it_del].type = CAN_S;<br>        }<br>        it_del++;<br>    }</int></p>
+<pre><code>map&lt;int,Node&gt;::iterator it_cmd = cmd.begin();
+float buy_min = 10000, sell_max = 0;
+while( it_cmd != cmd.end() ){
+    if( it_cmd-&gt;second.type == BUY ){
+</code></pre><p>//            cout&lt;<it_cmd->first&lt;&lt;” buy:”&lt;<it_cmd->second.t&lt;<endl; float="" f="it_cmd-">second.f;<br>            long long t = it_cmd-&gt;second.t;<br>            if( f<buy_min ){="" buy_min="f;" }="" res="" res;="" if(="" out.find(f)="=" out.end()="" 不存在="" res.buy="t;" res.sell="0;" out[f]="res;" }else{="" +="t;" }else="" it_cmd-="">second.type == SELL ){<br>            float f = it_cmd-&gt;second.f;<br>            long long t = it_cmd-&gt;second.t;<br>            if( f&gt;sell_max ){<br>                sell_max = f;<br>            }<br>            Res res;<br>            if( out.find(f) == out.end() ){<br>                res.buy = 0;<br>                res.sell = t;<br>                out[f] = res;<br>            }else{<br>                res = out[f];<br>                res.sell += t;<br>                out[f] = res;<br>            }<br>        }<br>        it_cmd++;<br>    }</buy_min></endl;></it_cmd-></it_cmd-></p>
+<pre><code>map&lt;float,Res&gt;::iterator it_out = out.begin();
+long long total = 0;
+// sell add-all
+while(it_out != out.end()){
+    Res res = it_out-&gt;second;
+    float f = it_out-&gt;first;
+    res.sell += total;
+    total = res.sell;
+    it_out-&gt;second = res;
+    it_out++;
+}
+
+it_out = out.end();
+it_out--;
+total = 0;
+// buy add-all
+while( it_out != out.begin()){
+    Res res = it_out-&gt;second;
+    float f = it_out-&gt;first;
+    res.buy += total;
+    total = res.buy;
+    it_out-&gt;second = res;
+    it_out--;
+}
+if( it_out==out.begin()){
+    Res res = it_out-&gt;second;
+    res.buy += total;
+    total = res.buy;
+    it_out-&gt;second = res;
+}
+
+it_out = out.end();
+it_out--; 
+float acc_f = it_out-&gt;first;
+Res acc_tmp = it_out-&gt;second;
+long long acc_t = acc_tmp.buy &gt; acc_tmp.sell ? acc_tmp.sell:acc_tmp.buy;
+
+while( it_out != out.begin() ){ // max-&gt;min
+    Res res = it_out-&gt;second;
+    float f = it_out-&gt;first;
+    if( f &lt; buy_min ) break;
+    int dim = res.buy &gt; res.sell ? res.sell:res.buy;
+    if(dim &gt; acc_t){
+        acc_t = dim;
+        acc_f = f; 
+    }
+    it_out--;
+}
+if( it_out==out.begin() &amp;&amp; it_out-&gt;first&gt;=buy_min){
+    Res res = it_out-&gt;second;
+    float f = it_out-&gt;first;
+    int dim = res.buy &gt; res.sell ? res.sell:res.buy;
+    if(dim &gt; acc_t){
+        acc_t = dim;
+        acc_f = f; 
+    }
+}
+printf(&quot;%.2f &quot;,acc_f);
+cout&lt;&lt;acc_t&lt;&lt;endl;
+return 0;
+</code></pre><p>}<br>```C++</p>
+</div><script type="text/javascript" src="/js/share.js?v=0.0.1" async></script><a data-url="http://yoursite.com/2017/03/13/201412-3-csp-集合竞价/" data-id="cj086xrd10007igvkqsj6mkkm" class="article-share-link">分享到</a><div class="tags"><a href="/tags/csp/">csp</a></div><div class="post-nav"><a href="/2017/03/13/201409-3-csp-字符串匹配/" class="next">201409-3 csp 字符串匹配</a></div></div></div></div><div class="pure-u-1 pure-u-md-1-4"><div id="sidebar"><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大学/">大学</a><span class="category-list-count">17</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/csp/" style="font-size: 15px;">csp</a> <a href="/tags/Android-架构/" style="font-size: 15px;">Android 架构</a> <a href="/tags/Android/" style="font-size: 15px;">Android</a> <a href="/tags/start/" style="font-size: 15px;">start</a> <a href="/tags/leetcode/" style="font-size: 15px;">leetcode</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/03/13/201412-3-csp-集合竞价/">201412-3 csp 集合竞价</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/13/201409-3-csp-字符串匹配/">201409-3 csp 字符串匹配</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/13/201503-3-csp-节日/">201503-3 csp 节日</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/13/201509-3-csp-模板生成系统/">201509-3 csp 模板生成系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/13/201512-3-csp-画图/">201512-3 csp 画图</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/13/201604-3-csp-路径解析/">201604-3 csp 路径解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/13/201609-3-csp-炉石传说/">201609-3 csp 炉石传说</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/13/201612-3-csp-权限查询/">201612-3 csp 权限查询</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/13/201612-4-csp-dp/">201612-4 csp dp</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/13/201412-4-csp-最小生成树/">201412-4 csp 最小生成树</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://milkxie.com/" title="Milk Shieh" target="_blank">Milk Shieh</a><ul></ul><a href="http://zekai.tech/" title="ZeKai" target="_blank">ZeKai</a><ul></ul><a href="http://pfas1995.cn/" title="pfas1995" target="_blank">pfas1995</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">© <a href="/." rel="nofollow">Leroy.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.1" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.1" async></script><link rel="stylesheet" type="text/css" href="/css/jquery.fancybox.css?v=0.0.1"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.1"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.1"></script></div></body></html>
