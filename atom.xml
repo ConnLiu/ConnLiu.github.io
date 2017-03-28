@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-03-14T11:08:34.000Z</updated>
+  <updated>2017-03-28T10:13:37.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,97 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>python wordcloud 中文显示为方格问题解决</title>
+    <link href="http://yoursite.com/2017/03/28/python-wordcloud-%E4%B8%AD%E6%96%87%E6%98%BE%E7%A4%BA%E4%B8%BA%E6%96%B9%E6%A0%BC%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/"/>
+    <id>http://yoursite.com/2017/03/28/python-wordcloud-中文显示为方格问题解决/</id>
+    <published>2017-03-28T09:01:44.000Z</published>
+    <updated>2017-03-28T10:13:37.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近在学习python，就想用python做一些有趣的事情，分析一下自己的QQ聊天记录，然后用标签云显示出来；首先，我就先准备熟悉一下wordcloud（制作标签云的一个强大的python包），结果发现显示中文过程中有各种坑。</p>
+<a id="more"></a>
+<p>首先我们看一下略微修改的wordcloud提供的官方使用代码sample.py （其中text本来是从文件中读取的，为了易于理解我改为直接赋值；另外plt.title()也是我增加的一行代码，为了单独验证plt是否能正确显示中文）<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/env python</span></div><div class="line"><span class="string">"""</span></div><div class="line">Minimal Example</div><div class="line">===============</div><div class="line">Generating a square wordcloud from the US constitution using default arguments.</div><div class="line">"""</div><div class="line"></div><div class="line"><span class="keyword">from</span> os <span class="keyword">import</span> path</div><div class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud</div><div class="line"></div><div class="line"><span class="comment"># Read the whole text.</span></div><div class="line">text = <span class="string">u"词语水平出现的频率"</span></div><div class="line"></div><div class="line"><span class="comment"># Generate a word cloud image</span></div><div class="line">wordcloud = WordCloud().generate(text)</div><div class="line"></div><div class="line"><span class="comment"># Display the generated image:</span></div><div class="line"><span class="comment"># the matplotlib way:</span></div><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line">plt.imshow(wordcloud, interpolation=<span class="string">'bilinear'</span>)</div><div class="line">plt.axis(<span class="string">"off"</span>)</div><div class="line"></div><div class="line"><span class="comment"># lower max_font_size</span></div><div class="line">wordcloud = WordCloud(max_font_size=<span class="number">40</span>).generate(text)</div><div class="line">plt.figure()</div><div class="line">plt.title(<span class="string">"词语水平出现的频率"</span>)</div><div class="line">plt.imshow(wordcloud, interpolation=<span class="string">"bilinear"</span>)</div><div class="line">plt.axis(<span class="string">"off"</span>)</div><div class="line">plt.show()</div><div class="line"></div><div class="line"><span class="comment"># The pil way (if you don't have matplotlib)</span></div><div class="line"><span class="comment"># image = wordcloud.to_image()</span></div><div class="line"><span class="comment"># image.show()</span></div></pre></td></tr></table></figure></p>
+<p>其中，首先是wordcloud对输入文本处理，再将结果交给库matplotlib绘制出来。那么为了判断错误出处方便，我们采取逆向一步一步解决。首先我们要保证matplotlib能够绘制出中文，再保证wordcloud处理之后的中文依旧没有乱码。</p>
+<p>这样，机智的你应该也明白了，最终图片是否能显示中文，必定是有两方面的影响（matplotlib和wordcloud）。</p>
+<h3 id="matplotlib的中文显示为方格"><a href="#matplotlib的中文显示为方格" class="headerlink" title="matplotlib的中文显示为方格"></a>matplotlib的中文显示为方格</h3><p>如果，图片能正确显示title为”词语水平出现的频率”，那么恭喜你：你的机器配置的matplotlib能够正确显示中文，这部分内容你就可以跳过了。</p>
+<ol>
+<li><p>首先，确保你的系统中有支持中文的字体。</p>
+<p> 使用fc-list :lang=zh 命令即可查询</p>
+<p> <img src="http://liukun.tech/pic/plt-fc-zh.png" alt=""></p>
+<p> 如果没有支持的字体的话，打开windows的C:\Windows\Fonts里面拷贝一个到linux的/usr/share/fonts/下的随意一个文件夹即可；</p>
+</li>
+<li><p>修改matplotlib的字体为 支持中文的字体（我这里用的就是STXingkai）</p>
+<p> 首先使用locate matplotlibrc 找到matplotlib配置文件的位置，然后打开它，找到font-family一项，取消注释它，同时取消注释它指向的项。例如下图中我就是取消注释font.sans-serif;最后在font.sans-serif项内容中加上支持中文的字体。别问我为什么名字是STXingkai，看1中的图。</p>
+<p> <img src="http://liukun.tech/pic/pltrc-font.png" alt=""></p>
+</li>
+<li><p>大功告成</p>
+<p> 如果，这个时候title还是显示为方格，可能需要删除一下缓存。执行 sudo rm -rf ~/.cache/matplotlib/</p>
+</li>
+</ol>
+<h3 id="wordcloud的中文显示为方格"><a href="#wordcloud的中文显示为方格" class="headerlink" title="wordcloud的中文显示为方格"></a>wordcloud的中文显示为方格</h3><ol>
+<li><p>首先，依旧是确保你的系统中有支持中文的字体。（参见上面的条目1）</p>
+</li>
+<li><p>找到wordcloud的配置文件</p>
+<p> 使用locate wordcloud.rc找到后，打开文件，找到 FONT_PATH的赋值语句（一般在引包之后的第二行），然后更改第三个参数为支持中文字体的 <strong>文件名</strong>。 </p>
+</li>
+<li><p>大功告成</p>
+<p> <img src="http://liukun.tech/pic/plt-result.png" alt=""></p>
+</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近在学习python，就想用python做一些有趣的事情，分析一下自己的QQ聊天记录，然后用标签云显示出来；首先，我就先准备熟悉一下wordcloud（制作标签云的一个强大的python包），结果发现显示中文过程中有各种坑。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
+    
+    
+      <category term="python" scheme="http://yoursite.com/tags/python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>leetcode-498-Diagonal Traverse</title>
+    <link href="http://yoursite.com/2017/03/26/leetcode-498-Diagonal-Traverse/"/>
+    <id>http://yoursite.com/2017/03/26/leetcode-498-Diagonal-Traverse/</id>
+    <published>2017-03-26T10:31:51.000Z</published>
+    <updated>2017-03-28T11:44:39.028Z</updated>
+    
+    <content type="html"><![CDATA[<p>终于，csp考试拿了一个较为理想的成绩380分，但是为了保证编程能力，我给自己定下一个目标，每周至少刷一道leetcode题目。这次刷的是第498题，这是一道中等难度的题目，并且场景还与一次csp考试中的第三题十分相似。</p>
+<a id="more"></a>
+<p>题目内容请移步  <a href="https://leetcode.com/problems/diagonal-traverse/#/description" target="_blank" rel="external">原题链接</a></p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>我观察到其实箭头走向一般都是斜向上、斜向下，只有在边界时才会横向或纵向移动，并且每次斜向上与斜向下都发生在到达边界后，于是我就由此着手。</p>
+<ol>
+<li>设置stepX和stepY为每一次x、y变化的量。这样斜向上、斜向下走就容易设置了，斜向上就是stepX为-1，stepY为1（这里具体的值和x、y的放置有关，我将行设置为x，列设置为y）；</li>
+<li>当到达边界时，就进行相应的纵向或横向位移，同时更换步进方向（原先斜上就改为斜下）。</li>
+</ol>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><pre><code>下面就是我的代码：
+</code></pre><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; findDiagonalOrder(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;&amp; matrix) &#123;</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; res;</div><div class="line">    <span class="keyword">if</span>(matrix.empty())  <span class="keyword">return</span> res;</div><div class="line">    <span class="keyword">int</span> m = matrix.size(), n = matrix[<span class="number">0</span>].size(), size = m*n;</div><div class="line">    <span class="keyword">int</span> stepX = <span class="number">-1</span>, stepY = <span class="number">1</span>, x = <span class="number">1</span>, y = <span class="number">-1</span>;</div><div class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)&#123;</div><div class="line">        x += stepX;</div><div class="line">        y += stepY;</div><div class="line">        <span class="keyword">if</span>( x&lt;=m<span class="number">-1</span> &amp;&amp; x&gt;=<span class="number">0</span> &amp;&amp; y&lt;=n<span class="number">-1</span> &amp;&amp; y&gt;=<span class="number">0</span> )</div><div class="line">            res.push_back(matrix[x][y]);</div><div class="line">        <span class="keyword">else</span>&#123;</div><div class="line">            x -= stepX;</div><div class="line">            y -= stepY;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span>( x==m<span class="number">-1</span> )&#123;</div><div class="line">            <span class="keyword">if</span>( y==n<span class="number">-1</span>)&#123; <span class="comment">// y == n-1</span></div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;<span class="keyword">else</span>&#123;</div><div class="line">                y++;</div><div class="line">                res.push_back(matrix[x][y]);</div><div class="line">            &#125;</div><div class="line">            stepX = -stepX;</div><div class="line">            stepY = -stepY;</div><div class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>( x==<span class="number">0</span> )&#123;</div><div class="line">            <span class="keyword">if</span>( y==n<span class="number">-1</span>)&#123; <span class="comment">// y == n-1</span></div><div class="line">                x++;</div><div class="line">                res.push_back(matrix[x][y]);</div><div class="line">            &#125;<span class="keyword">else</span>&#123;</div><div class="line">                y++;</div><div class="line">                res.push_back(matrix[x][y]);</div><div class="line">            &#125;</div><div class="line">            stepX = -stepX;</div><div class="line">            stepY = -stepY;</div><div class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>( y==<span class="number">0</span> )&#123;</div><div class="line">            <span class="keyword">if</span>( x==m<span class="number">-1</span> )&#123;</div><div class="line">                y++;</div><div class="line">                res.push_back(matrix[x][y]);</div><div class="line">            &#125;<span class="keyword">else</span>&#123;</div><div class="line">                x++;</div><div class="line">                res.push_back(matrix[x][y]);</div><div class="line">            &#125;</div><div class="line">            stepX = -stepX;</div><div class="line">            stepY = -stepY;</div><div class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>( y==n<span class="number">-1</span> )&#123;</div><div class="line">            <span class="keyword">if</span>( x==m<span class="number">-1</span> )&#123;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;<span class="keyword">else</span>&#123;</div><div class="line">                x++;</div><div class="line">                res.push_back(matrix[x][y]);</div><div class="line">            &#125;</div><div class="line">            stepX = -stepX;</div><div class="line">            stepY = -stepY;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> res;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="反思"><a href="#反思" class="headerlink" title="反思"></a>反思</h2><p>看了看Solutions里面最高的代码是java写的，思路和我的一样，但是实现的实在是精简的多！</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] findDiagonalOrder(<span class="keyword">int</span>[][] matrix) &#123;</div><div class="line">    <span class="keyword">if</span> (matrix == <span class="keyword">null</span> || matrix.length == <span class="number">0</span>) <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">0</span>];</div><div class="line">    <span class="keyword">int</span> m = matrix.length, n = matrix[<span class="number">0</span>].length;</div><div class="line">    </div><div class="line">    <span class="keyword">int</span>[] result = <span class="keyword">new</span> <span class="keyword">int</span>[m * n];</div><div class="line">    <span class="keyword">int</span> row = <span class="number">0</span>, col = <span class="number">0</span>, d = <span class="number">0</span>;</div><div class="line">    <span class="keyword">int</span>[][] dirs = &#123;&#123;-<span class="number">1</span>, <span class="number">1</span>&#125;, &#123;<span class="number">1</span>, -<span class="number">1</span>&#125;&#125;;</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m * n; i++) &#123;</div><div class="line">        result[i] = matrix[row][col];</div><div class="line">        row += dirs[d][<span class="number">0</span>];</div><div class="line">        col += dirs[d][<span class="number">1</span>];</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> (row &gt;= m) &#123; row = m - <span class="number">1</span>; col += <span class="number">2</span>; d = <span class="number">1</span> - d;&#125;</div><div class="line">        <span class="keyword">if</span> (col &gt;= n) &#123; col = n - <span class="number">1</span>; row += <span class="number">2</span>; d = <span class="number">1</span> - d;&#125;</div><div class="line">        <span class="keyword">if</span> (row &lt; <span class="number">0</span>)  &#123; row = <span class="number">0</span>; d = <span class="number">1</span> - d;&#125;</div><div class="line">        <span class="keyword">if</span> (col &lt; <span class="number">0</span>)  &#123; col = <span class="number">0</span>; d = <span class="number">1</span> - d;&#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;终于，csp考试拿了一个较为理想的成绩380分，但是为了保证编程能力，我给自己定下一个目标，每周至少刷一道leetcode题目。这次刷的是第498题，这是一道中等难度的题目，并且场景还与一次csp考试中的第三题十分相似。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
+    
+    
+      <category term="leetcode" scheme="http://yoursite.com/tags/leetcode/"/>
+    
+  </entry>
+  
+  <entry>
     <title>201512-4 csp 送货</title>
     <link href="http://yoursite.com/2017/03/14/201512-4-csp-%E9%80%81%E8%B4%A7/"/>
     <id>http://yoursite.com/2017/03/14/201512-4-csp-送货/</id>
     <published>2017-03-14T09:15:35.000Z</published>
-    <updated>2017-03-14T11:08:34.000Z</updated>
+    <updated>2017-03-28T08:57:46.944Z</updated>
     
     <content type="html"><![CDATA[<p>这道题目思路比较简单，但是细节很多、坑很多，然后我就一一踩了个遍，写了好几天才一百。<br><a id="more"></a></p>
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>细数一下踩过的坑。</p>
@@ -40,7 +126,7 @@
     
     </summary>
     
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
     
     
       <category term="csp" scheme="http://yoursite.com/tags/csp/"/>
@@ -52,7 +138,7 @@
     <link href="http://yoursite.com/2017/03/14/201409-4-csp-%E6%9C%80%E4%BC%98%E9%85%8D%E9%A4%90/"/>
     <id>http://yoursite.com/2017/03/14/201409-4-csp-最优配餐/</id>
     <published>2017-03-14T09:15:13.000Z</published>
-    <updated>2017-03-14T11:09:21.648Z</updated>
+    <updated>2017-03-28T08:57:27.960Z</updated>
     
     <content type="html"><![CDATA[<p>这道题目思路比较简单，就是一个bfs的思想。<br><a id="more"></a></p>
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>嗯，虽然只是一个简单的bfs思想就可以解决，但是。。。。。</p>
@@ -68,7 +154,7 @@
     
     </summary>
     
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
     
     
       <category term="csp" scheme="http://yoursite.com/tags/csp/"/>
@@ -80,7 +166,7 @@
     <link href="http://yoursite.com/2017/03/13/201412-3-csp-%E9%9B%86%E5%90%88%E7%AB%9E%E4%BB%B7/"/>
     <id>http://yoursite.com/2017/03/13/201412-3-csp-集合竞价/</id>
     <published>2017-03-13T14:12:01.000Z</published>
-    <updated>2017-03-14T11:11:56.769Z</updated>
+    <updated>2017-03-28T08:57:30.753Z</updated>
     
     <content type="html"><![CDATA[<p>对于没有接触过股市的我来说，这道题目题面就有一点点复杂，后来虽然了然于心了，但是还差一点，终于80分。<br><a id="more"></a></p>
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>虽然我已经注意到了，要用long long类型存储，可是依然80分。</p>
@@ -93,7 +179,7 @@
     
     </summary>
     
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
     
     
       <category term="csp" scheme="http://yoursite.com/tags/csp/"/>
@@ -105,7 +191,7 @@
     <link href="http://yoursite.com/2017/03/13/201409-3-csp-%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8C%B9%E9%85%8D/"/>
     <id>http://yoursite.com/2017/03/13/201409-3-csp-字符串匹配/</id>
     <published>2017-03-13T14:08:19.000Z</published>
-    <updated>2017-03-14T11:09:31.712Z</updated>
+    <updated>2017-03-28T08:57:25.383Z</updated>
     
     <content type="html"><![CDATA[<p>这道题目思路简单，借助string的一些函数，手到擒来。<br><a id="more"></a></p>
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>嗯，string是个好东西，要好好学习。</p>
@@ -119,7 +205,7 @@
     
     </summary>
     
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
     
     
       <category term="csp" scheme="http://yoursite.com/tags/csp/"/>
@@ -131,7 +217,7 @@
     <link href="http://yoursite.com/2017/03/13/201503-3-csp-%E8%8A%82%E6%97%A5/"/>
     <id>http://yoursite.com/2017/03/13/201503-3-csp-节日/</id>
     <published>2017-03-13T14:03:50.000Z</published>
-    <updated>2017-03-14T11:09:07.056Z</updated>
+    <updated>2017-03-28T08:57:36.056Z</updated>
     
     <content type="html"><![CDATA[<p>这道题目思路简单，而且便于测试，只要随便找个日子对一对就OK。<br><a id="more"></a></p>
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>先找到每一年的第一天是周几。</p>
@@ -147,7 +233,7 @@
     
     </summary>
     
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
     
     
       <category term="csp" scheme="http://yoursite.com/tags/csp/"/>
@@ -159,7 +245,7 @@
     <link href="http://yoursite.com/2017/03/13/201509-3-csp-%E6%A8%A1%E6%9D%BF%E7%94%9F%E6%88%90%E7%B3%BB%E7%BB%9F/"/>
     <id>http://yoursite.com/2017/03/13/201509-3-csp-模板生成系统/</id>
     <published>2017-03-13T13:59:25.000Z</published>
-    <updated>2017-03-14T11:31:43.888Z</updated>
+    <updated>2017-03-28T08:57:38.454Z</updated>
     
     <content type="html"><![CDATA[<p>这道题目细节很重要，注意一些特殊的情况。<br><a id="more"></a></p>
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><pre><code>比如 name “{{ address }}” 的情况，不能把替换之后的{{ address }}当成变量替换了（其中address也要考虑为email时）。
@@ -174,7 +260,7 @@
     
     </summary>
     
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
     
     
       <category term="csp" scheme="http://yoursite.com/tags/csp/"/>
@@ -186,7 +272,7 @@
     <link href="http://yoursite.com/2017/03/13/201512-3-csp-%E7%94%BB%E5%9B%BE/"/>
     <id>http://yoursite.com/2017/03/13/201512-3-csp-画图/</id>
     <published>2017-03-13T13:50:26.000Z</published>
-    <updated>2017-03-14T11:08:51.428Z</updated>
+    <updated>2017-03-28T08:57:43.497Z</updated>
     
     <content type="html"><![CDATA[<p>这道题写出来不难，但是有个小细节要注意。<br><a id="more"></a></p>
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p> 唯一的一个小细节。</p>
@@ -200,7 +286,7 @@
     
     </summary>
     
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
     
     
       <category term="csp" scheme="http://yoursite.com/tags/csp/"/>
@@ -212,7 +298,7 @@
     <link href="http://yoursite.com/2017/03/13/201604-3-csp-%E8%B7%AF%E5%BE%84%E8%A7%A3%E6%9E%90/"/>
     <id>http://yoursite.com/2017/03/13/201604-3-csp-路径解析/</id>
     <published>2017-03-13T13:49:41.000Z</published>
-    <updated>2017-03-14T11:07:43.877Z</updated>
+    <updated>2017-03-28T08:57:49.920Z</updated>
     
     <content type="html"><![CDATA[<p>这道题目思路很重要，一定不要想多了。<br><a id="more"></a></p>
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>不要建树。</p>
@@ -228,7 +314,7 @@
     
     </summary>
     
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
     
     
       <category term="csp" scheme="http://yoursite.com/tags/csp/"/>
@@ -240,7 +326,7 @@
     <link href="http://yoursite.com/2017/03/13/201609-3-csp-%E7%82%89%E7%9F%B3%E4%BC%A0%E8%AF%B4/"/>
     <id>http://yoursite.com/2017/03/13/201609-3-csp-炉石传说/</id>
     <published>2017-03-13T13:46:34.000Z</published>
-    <updated>2017-03-14T11:08:09.274Z</updated>
+    <updated>2017-03-28T08:57:52.268Z</updated>
     
     <content type="html"><![CDATA[<p>较近一次的csp题目，依旧是典型的模拟题。<br><a id="more"></a></p>
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>依照题意，一步一步模拟即可，十分简单。</p>
@@ -252,7 +338,7 @@
     
     </summary>
     
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
     
     
       <category term="csp" scheme="http://yoursite.com/tags/csp/"/>
@@ -264,7 +350,7 @@
     <link href="http://yoursite.com/2017/03/13/201612-3-csp-%E6%9D%83%E9%99%90%E6%9F%A5%E8%AF%A2/"/>
     <id>http://yoursite.com/2017/03/13/201612-3-csp-权限查询/</id>
     <published>2017-03-13T13:40:07.000Z</published>
-    <updated>2017-03-14T11:07:58.986Z</updated>
+    <updated>2017-03-23T11:55:46.727Z</updated>
     
     <content type="html"><![CDATA[<p>这是最近一次的csp题目，第三题就是典型的模拟题，并且这题还非常地大。。。俗称大模拟<br><a id="more"></a></p>
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>依照题意，一步一步模拟即可。</p>
@@ -277,7 +363,7 @@
     
     </summary>
     
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
     
     
       <category term="csp" scheme="http://yoursite.com/tags/csp/"/>
@@ -289,7 +375,7 @@
     <link href="http://yoursite.com/2017/03/13/201612-4-csp-dp/"/>
     <id>http://yoursite.com/2017/03/13/201612-4-csp-dp/</id>
     <published>2017-03-13T10:02:23.000Z</published>
-    <updated>2017-03-13T13:31:56.896Z</updated>
+    <updated>2017-03-23T11:55:43.998Z</updated>
     
     <content type="html"><![CDATA[<p>这道题目，当初考试时候也做过，一脸懵逼的瞎碰了10分。后来才知道可以用动态规划来写，找到了状态转移方程就十分简单。<br><a id="more"></a></p>
 <h3 id="首先证明一下csp练习题的OJ给的算法耗时是假的"><a href="#首先证明一下csp练习题的OJ给的算法耗时是假的" class="headerlink" title="首先证明一下csp练习题的OJ给的算法耗时是假的"></a>首先证明一下csp练习题的OJ给的算法耗时是假的</h3><p><img src="http://liukun.tech/pic/time_csp.png" alt=""></p>
@@ -304,7 +390,7 @@
     
     </summary>
     
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
     
     
       <category term="csp" scheme="http://yoursite.com/tags/csp/"/>
@@ -316,7 +402,7 @@
     <link href="http://yoursite.com/2017/03/13/201412-4-csp-%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/"/>
     <id>http://yoursite.com/2017/03/13/201412-4-csp-最小生成树/</id>
     <published>2017-03-13T09:56:48.000Z</published>
-    <updated>2017-03-14T10:53:17.000Z</updated>
+    <updated>2017-03-28T08:57:33.666Z</updated>
     
     <content type="html"><![CDATA[<p>毫无坑点，直接用Kruskal 算法即可。算法思想也比较简单，直接参见代码即可<br><a id="more"></a><br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 最小生成树  Kruskal 算法</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span> </span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> maxV 100000</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> maxE 100000</span></div><div class="line"><span class="keyword">struct</span> Edge&#123;</div><div class="line">	<span class="keyword">int</span> fm, to ,dist;</div><div class="line">&#125;e[maxE];</div><div class="line"><span class="keyword">int</span> fa[maxV], n, m;</div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">cmp</span><span class="params">(Edge a,Edge b)</span></span>&#123;</div><div class="line">	<span class="keyword">return</span> a.dist &lt; b.dist;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getfa</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;  <span class="comment">//在并查集森林中找到x的祖先 </span></div><div class="line">	<span class="keyword">if</span>(fa[x] == x) <span class="keyword">return</span> fa[x];</div><div class="line">	<span class="keyword">else</span> <span class="keyword">return</span> fa[x] = getfa(fa[x]); </div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">same</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span>&#123;</div><div class="line">	<span class="keyword">return</span> getfa(x) == getfa(y);</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">void</span>  <span class="title">merge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</div><div class="line">	<span class="keyword">int</span> fax = getfa(x), fay = getfa(y);</div><div class="line">	fa[fax] = fay;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">	<span class="built_in">cin</span>&gt;&gt;n&gt;&gt;m;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;=m; i++)</div><div class="line">		<span class="built_in">cin</span>&gt;&gt;e[i].fm&gt;&gt;e[i].to&gt;&gt;e[i].dist;</div><div class="line">	sort(e+<span class="number">1</span>,e+m+<span class="number">1</span>,cmp); <span class="comment">// 对边按权值进行升序排序</span></div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;=n; i++)</div><div class="line">		fa[i] = i;</div><div class="line">	<span class="keyword">int</span> rst = n, ans = <span class="number">0</span>; <span class="comment">//rst 表示目前的点共存于多少个集合中</span></div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;=m &amp;&amp; rst&gt;<span class="number">1</span>; i++)&#123;</div><div class="line">		<span class="keyword">int</span> x = e[i].fm, y = e[i].to;</div><div class="line">		<span class="keyword">if</span>(same(x,y)) <span class="keyword">continue</span>;  <span class="comment">//如果两个点存在同一集合中</span></div><div class="line">		<span class="keyword">else</span>&#123;</div><div class="line">			merge(x,y); <span class="comment">//将两个点合并到同一集 </span></div><div class="line">			rst--; <span class="comment">//合并集合后，集合数目减一 </span></div><div class="line">			ans += e[i].dist;</div><div class="line">		&#125;	</div><div class="line">	&#125; </div><div class="line">	<span class="built_in">cout</span>&lt;&lt;ans&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 ]]></content>
@@ -327,7 +413,7 @@
     
     </summary>
     
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
     
     
       <category term="csp" scheme="http://yoursite.com/tags/csp/"/>
@@ -339,7 +425,7 @@
     <link href="http://yoursite.com/2017/03/13/201312-4-csp-%E6%9C%89%E8%B6%A3%E7%9A%84%E6%95%B0/"/>
     <id>http://yoursite.com/2017/03/13/201312-4-csp-有趣的数/</id>
     <published>2017-03-13T08:35:50.000Z</published>
-    <updated>2017-03-13T08:49:21.000Z</updated>
+    <updated>2017-03-28T08:57:09.194Z</updated>
     
     <content type="html"><![CDATA[<p>这题是一个排列组合问题，只要建模完成就很容易写出来。<br><a id="more"></a></p>
 <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>　　我们把一个数称为有趣的，当且仅当：</p>
@@ -376,7 +462,7 @@
     
     </summary>
     
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
     
     
       <category term="csp" scheme="http://yoursite.com/tags/csp/"/>
@@ -388,7 +474,7 @@
     <link href="http://yoursite.com/2017/03/13/201509-4%20csp%20Tarjan/"/>
     <id>http://yoursite.com/2017/03/13/201509-4 csp Tarjan/</id>
     <published>2017-03-13T06:28:52.000Z</published>
-    <updated>2017-03-13T13:10:21.732Z</updated>
+    <updated>2017-03-28T08:57:40.936Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Tarjan-算法"><a href="#Tarjan-算法" class="headerlink" title="Tarjan 算法"></a>Tarjan 算法</h2><p>任选一结点开始进行深度优先搜索（若深度优先搜索结束后仍有未访问的结点，则再从中任选一点再次进行）。搜索过程中已访问的结点不再访问。搜索树的若干子树构成了图的强连通分量。</p>
 <p>结点按照被访问的顺序存入栈中。从搜索树的子树返回至一个结点时，检查该结点是否是某一强连通分量的根结点（见下）并将其从栈中删除。如果某结点是强连通分量的根，则在它之前出栈且还不属于其他强连通分量的结点构成了该结点所在的强连通分量。<br><a id="more"></a><br><img src="http://liukun.tech/pic/targan.gif" alt=""></p>
@@ -410,7 +496,7 @@
     
     </summary>
     
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
     
     
       <category term="csp" scheme="http://yoursite.com/tags/csp/"/>
@@ -422,7 +508,7 @@
     <link href="http://yoursite.com/2017/03/01/201403-3%20csp%20%E5%91%BD%E4%BB%A4%E8%A1%8C%E9%80%89%E9%A1%B9/"/>
     <id>http://yoursite.com/2017/03/01/201403-3 csp 命令行选项/</id>
     <published>2017-03-01T14:59:39.000Z</published>
-    <updated>2017-03-14T11:10:41.000Z</updated>
+    <updated>2017-03-28T08:57:15.179Z</updated>
     
     <content type="html"><![CDATA[<p>在同学的帮助下，终于解决了,这个简单的题目总算拿了100分。<br><a id="more"></a><br>-3.01</p>
 <pre><code>先就只放代码吧，后面解决了再补充吧。 (ง •_•)ง  
@@ -443,7 +529,7 @@
     
     </summary>
     
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
     
     
       <category term="csp" scheme="http://yoursite.com/tags/csp/"/>
@@ -455,7 +541,7 @@
     <link href="http://yoursite.com/2017/02/26/Android-%E6%9E%B6%E6%9E%84%E5%88%9D%E6%8E%A2/"/>
     <id>http://yoursite.com/2017/02/26/Android-架构初探/</id>
     <published>2017-02-26T14:23:42.000Z</published>
-    <updated>2017-03-13T13:10:42.755Z</updated>
+    <updated>2017-03-23T11:55:40.658Z</updated>
     
     <content type="html"><![CDATA[<p>将项目分为了三个层级：模型层、核心层、界面层。模型层定义了所有的模型，即数据类型如UserBO；核心层处理所有业务逻辑，如判断邮箱格式、密码的md5转换；界面层就处理界面的展示。各个层级之间的依赖关系如下图</p>
 <p><img src="http://liukun.tech/pic/android-jiagou-01.png" alt=""><br><a id="more"></a></p>
@@ -499,7 +585,7 @@
     
     </summary>
     
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
     
     
       <category term="Android 架构" scheme="http://yoursite.com/tags/Android-%E6%9E%B6%E6%9E%84/"/>
@@ -507,11 +593,11 @@
   </entry>
   
   <entry>
-    <title>leetcode-1-RomanToInt</title>
-    <link href="http://yoursite.com/2017/02/25/leetcode-1-RomanToInt/"/>
-    <id>http://yoursite.com/2017/02/25/leetcode-1-RomanToInt/</id>
+    <title>leetcode-13-RomanToInt</title>
+    <link href="http://yoursite.com/2017/02/25/leetcode-13-RomanToInt/"/>
+    <id>http://yoursite.com/2017/02/25/leetcode-13-RomanToInt/</id>
     <published>2017-02-25T08:13:06.000Z</published>
-    <updated>2017-03-13T13:10:50.043Z</updated>
+    <updated>2017-03-28T11:38:05.934Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h2><p>Given a roman numeral, convert it to an integer.</p>
 <p>Input is guaranteed to be within the range from 1 to 3999.</p>
@@ -573,7 +659,7 @@
     
     </summary>
     
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
     
     
       <category term="leetcode" scheme="http://yoursite.com/tags/leetcode/"/>
@@ -585,7 +671,7 @@
     <link href="http://yoursite.com/2017/02/20/AsyncTask/"/>
     <id>http://yoursite.com/2017/02/20/AsyncTask/</id>
     <published>2017-02-20T13:45:58.000Z</published>
-    <updated>2017-02-23T07:17:13.896Z</updated>
+    <updated>2017-03-28T09:00:10.976Z</updated>
     
     <content type="html"><![CDATA[<p>AsyncTask是Android提供的一个助手类，它对Thread和Handler进行了封装，方便我们使用。Android之所以提供AsyncTask这个类，就是为了方便我们在后台线程中执行耗时操作，然后将结果发送给主线程，从而在主线程中进行UI更新等操作。<br><a id="more"></a></p>
 <h1 id="三个构造时的传入参数"><a href="#三个构造时的传入参数" class="headerlink" title="三个构造时的传入参数"></a>三个构造时的传入参数</h1><p>首先，AsyncTask构造时有三种泛型参数：Params, Progress 和 Result，如下</p>
@@ -622,42 +708,10 @@
     
     </summary>
     
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="career" scheme="http://yoursite.com/categories/career/"/>
     
     
       <category term="Android" scheme="http://yoursite.com/tags/Android/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>First page</title>
-    <link href="http://yoursite.com/2017/02/07/First-page/"/>
-    <id>http://yoursite.com/2017/02/07/First-page/</id>
-    <published>2017-02-07T09:56:35.000Z</published>
-    <updated>2017-02-23T06:29:46.341Z</updated>
-    
-    <content type="html"><![CDATA[<p>  十分开心，终于搭建好了第一个blog。<br><a id="more"></a></p>
-<h2 id="记录"><a href="#记录" class="headerlink" title="记录"></a>记录</h2><ul>
-<li><p>Markdown</p>
-<p>由于博客的文章都是采用markdown来写的，所以有必要了解这个语法。</p>
-<p>Markdown 的目标是实现「易读易写」。<a href="http://www.jianshu.com/p/f3fd881548ad" target="_blank" rel="external">这里</a>不仅介绍了atom的使用方法，还有Markdown的语法，我这第一篇文章便是用atom写的，虽然我最后还是准备投入Vscode的怀抱。</p>
-</li>
-<li><p>theme——<a href="https://www.haomwei.com/technology/maupassant-hexo.html" target="_blank" rel="external">Maupassant</a></p>
-<p>这是一个至简的主题，所以我喜欢，于是用了。</p>
-</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;  十分开心，终于搭建好了第一个blog。&lt;br&gt;
-    
-    </summary>
-    
-      <category term="大学" scheme="http://yoursite.com/categories/%E5%A4%A7%E5%AD%A6/"/>
-    
-    
-      <category term="start" scheme="http://yoursite.com/tags/start/"/>
     
   </entry>
   
